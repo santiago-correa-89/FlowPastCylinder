@@ -123,22 +123,6 @@ Particularly effective in vortex-dominated wake regions.
 
 # 📂 Repository Structure
 
-
-.
-├── data/
-│ └── CFD reference datasets
-│
-├── PINN_NS_vanilla_inverse.ipynb
-├── PINN_NS_FW_inverse.ipynb
-├── PINN_NS_AW_inverse.ipynb
-├── PINN_NS_RBA_inverse.ipynb
-│
-├── CompareVanillaPINN.m
-├── organizeDataSimulation.m
-│
-└── README.md
-
-
 The folder `data/` contains CFD reference solutions:
 
 $$
