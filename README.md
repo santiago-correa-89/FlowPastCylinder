@@ -203,3 +203,38 @@ Physics-informed neural networks:
 A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations
 
 Journal of Computational Physics (2019)
+
+---------------------------------------------------------------------
+
+CITATION AND ATTRIBUTION
+
+If you use this repository in your research, publications, or derivative work,
+please cite the repository and acknowledge the original authors:
+
+Santiago Correa
+Christian Díaz-Cuadro
+
+Physics-Informed Neural Networks for Flow Past Cylinder (2D):
+Loss-balancing strategies for Navier–Stokes reconstruction.
+GitHub repository.
+
+If this code contributes to published results, please include a reference to
+the repository and clearly indicate any modifications performed.
+
+---------------------------------------------------------------------
+
+ACADEMIC USE
+
+This repository is intended for research and educational purposes. If you use
+it as part of a scientific publication, thesis, or technical report, proper
+acknowledgment of the original authors is required.
+
+
+---------------------------------------------------------------------
+
+CONTACT
+
+For questions, collaborations, or extensions of this work:
+
+Santiago Correa (scorrea@fing.edu.uy)
+Christian Díaz-Cuadro (cdiaz@fing.edu.uy)
