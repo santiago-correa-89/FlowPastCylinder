@@ -1,109 +1,132 @@
-# Physics-Informed Neural Networks for Flow Past Cylinder (2D)
+# 🌀 Physics-Informed Neural Networks for Flow Past Cylinder (2D)
 
-This repository contains implementations of Physics-Informed Neural Networks (PINNs) for the reconstruction of unsteady incompressible flow past a circular cylinder using different loss balancing strategies.
+This repository provides implementations of **Physics-Informed Neural Networks (PINNs)** for reconstructing **unsteady incompressible flow past a circular cylinder** using several **loss balancing strategies**.
 
-The objective of this repository is to provide a clean, reproducible, and extensible benchmark framework to compare weighting strategies in PINN training applied to the Navier–Stokes equations.
+The objective is to offer a **clean, reproducible benchmark framework** to evaluate how different weighting techniques affect convergence, stability, and reconstruction accuracy when solving the **Navier–Stokes equations** with PINNs.
 
-The implementations are inspired by the formulation introduced in:
+The implementations follow the formulation introduced in:
 
-Raissi, Perdikaris, Karniadakis (2019)
-Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations
-Journal of Computational Physics.
+> Raissi, M., Perdikaris, P., Karniadakis, G.E. (2019)  
+> *Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations*  
+> Journal of Computational Physics
 
+---
 
----------------------------------------------------------------------
+# 📘 Governing Equations
 
-GOVERNING EQUATIONS
+We solve the **2D incompressible Navier–Stokes equations**
 
-We consider the 2D incompressible Navier–Stokes equations:
+$$
+u_t + u u_x + v u_y = -p_x + \nu (u_{xx} + u_{yy})
+$$
 
-u_t + u u_x + v u_y = -p_x + ν (u_xx + u_yy)
+$$
+v_t + u v_x + v v_y = -p_y + \nu (v_{xx} + v_{yy})
+$$
 
-v_t + u v_x + v v_y = -p_y + ν (v_xx + v_yy)
-
+$$
 u_x + v_y = 0
-
+$$
 
 where:
 
-u(x,y,t) = streamwise velocity
-v(x,y,t) = transverse velocity
-p(x,y,t) = pressure field
-ν = kinematic viscosity
+- $u(x,y,t)$ = streamwise velocity  
+- $v(x,y,t)$ = transverse velocity  
+- $p(x,y,t)$ = pressure field  
+- $\nu$ = kinematic viscosity  
 
-The neural network approximates:
+The neural network approximates
 
-(x, y, t) → (u, v, p)
+$$
+(x,y,t) \rightarrow (u,v,p)
+$$
 
 and enforces the governing equations through automatic differentiation.
 
+---
 
----------------------------------------------------------------------
+# 🎯 Repository Objectives
 
-REPOSITORY OBJECTIVES
+This repository enables:
 
-This repository aims to:
+- reconstruction of velocity and pressure fields from sparse measurements
+- comparison of PINN loss-balancing strategies
+- evaluation of convergence stability
+- benchmarking inverse Navier–Stokes reconstruction
+- reproducible Flow Past Cylinder experiments
 
-- reconstruct velocity and pressure fields from sparse data
-- compare different loss weighting strategies
-- analyze convergence and stability of PINN training
-- provide a structured benchmark for future developments
-- reproduce the classical Flow Past Cylinder test case from PINN literature
+---
 
+# 🧠 Implemented PINN Variants
 
----------------------------------------------------------------------
+Four training strategies are included:
 
-IMPLEMENTED PINN VARIANTS
+| Method | Description |
+|--------|-------------|
+| **Vanilla PINN** | Equal-weight loss formulation |
+| **FW (Fixed Weights)** | Manual weighting between loss terms |
+| **AW (Adaptive Weights)** | Dynamically updated training weights |
+| **RBA (Residual-Based Attention)** | Residual-driven spatial weighting |
 
-The repository includes four training strategies:
+---
 
-
-1) Vanilla PINN
+## 1️⃣ Vanilla PINN
 
 Standard formulation:
 
-Loss = Loss_data + Loss_physics
+$$
+\mathcal{L} = \mathcal{L}_{data} + \mathcal{L}_{physics}
+$$
 
-All terms equally weighted.
+Baseline implementation used as reference.
 
-Reference baseline implementation.
+---
 
+## 2️⃣ Fixed Weights (FW)
 
-2) Fixed Weights (FW)
+Manual balancing between loss contributions:
 
-Manual weighting between data and physics losses:
+$$
+\mathcal{L} =
+\lambda_d \mathcal{L}_{data}
++
+\lambda_f \mathcal{L}_{physics}
+$$
 
-Loss = λ_d Loss_data + λ_f Loss_physics
+Useful for sensitivity analysis and controlled experiments.
 
-Useful for controlled experiments and sensitivity studies.
+---
 
+## 3️⃣ Adaptive Weights (AW)
 
-3) Adaptive Weights (AW)
+Training weights evolve dynamically during optimization to:
 
-Adaptive balancing between loss terms during training.
+- prevent loss-term domination
+- improve convergence stability
+- enhance reconstruction accuracy
 
-Weights evolve dynamically to improve convergence and avoid domination of one loss component over the others.
+---
 
+## 4️⃣ Residual-Based Attention (RBA)
 
-4) Residual-Based Attention (RBA)
+Residual-driven spatial weighting strategy:
 
-Residual-driven adaptive weighting strategy:
+$$
+\lambda(x) \propto |f(x)|
+$$
 
-λ(x) proportional to |residual(x)|
+Regions with higher residuals receive stronger optimization emphasis.
 
-Higher residual regions receive larger attention during optimization.
+Particularly effective in vortex-dominated wake regions.
 
-Particularly effective for complex vortex-dominated flows.
+---
 
+# 📂 Repository Structure
 
----------------------------------------------------------------------
-
-REPOSITORY STRUCTURE
 
 .
-
 ├── data/
-│   └── CFD reference datasets
+│ └── CFD reference datasets
 │
 ├── PINN_NS_vanilla_inverse.ipynb
 ├── PINN_NS_FW_inverse.ipynb
@@ -116,125 +139,177 @@ REPOSITORY STRUCTURE
 └── README.md
 
 
-data/
+The folder `data/` contains CFD reference solutions:
 
-Contains CFD reference solutions used for training and validation.
+$$
+(x,y,t) \rightarrow (u,v,p)
+$$
 
-Typical variables:
+used for training and validation.
 
-(x, y, t) → (u, v, p)
+---
 
+# ⚙️ Training Inputs and Outputs
 
----------------------------------------------------------------------
+### Inputs
 
-TRAINING INPUTS AND OUTPUTS
+$$
+(x,y,t)
+$$
 
+### Outputs
 
-Inputs:
+$$
+(u,v,p)
+$$
 
-x
-y
-t
+---
 
+# 📊 Loss Function Structure
 
-Outputs:
+Each implementation minimizes
 
-u(x,y,t)
-v(x,y,t)
-p(x,y,t)
+$$
+\mathcal{L} =
+\mathcal{L}_{data}
++
+\mathcal{L}_{physics}
+$$
 
+### Data Loss
 
----------------------------------------------------------------------
+$$
+\mathcal{L}_{data}
+=
+\text{MSE}(u_{pred}-u_{data})
++
+\text{MSE}(v_{pred}-v_{data})
+$$
 
-LOSS FUNCTION STRUCTURE
+### Physics Residual Loss
 
-Each implementation minimizes:
-
-Loss = Loss_data + Loss_physics
-
-
-Data Loss:
-
-Loss_data = MSE(u_pred − u_data)
-          + MSE(v_pred − v_data)
-
-
-Physics Loss:
-
-Loss_physics = MSE(f_u)
-             + MSE(f_v)
-             + MSE(divergence)
-
+$$
+\mathcal{L}_{physics}
+=
+\text{MSE}(f_u)
++
+\text{MSE}(f_v)
++
+\text{MSE}(\nabla \cdot \mathbf{u})
+$$
 
 Residual definitions:
 
-f_u = u_t + u u_x + v u_y + p_x − ν(u_xx + u_yy)
+$$
+f_u =
+u_t
++
+u u_x
++
+v u_y
++
+p_x
+-
+\nu (u_{xx}+u_{yy})
+$$
 
-f_v = v_t + u v_x + v v_y + p_y − ν(v_xx + v_yy)
+$$
+f_v =
+v_t
++
+u v_x
++
+v v_y
++
+p_y
+-
+\nu (v_{xx}+v_{yy})
+$$
 
-divergence = u_x + v_y
+$$
+\nabla \cdot \mathbf{u} = u_x + v_y
+$$
 
+---
 
----------------------------------------------------------------------
-
-BENCHMARK CASE: FLOW PAST CYLINDER
+# 🌊 Benchmark Case: Flow Past Cylinder
 
 We consider the classical wake flow behind a circular cylinder at moderate Reynolds number.
 
-This benchmark exhibits:
+This benchmark includes:
 
-- vortex shedding
-- pressure reconstruction challenges
-- strong nonlinear coupling
-- sparse-data reconstruction difficulty
+- vortex shedding dynamics
+- nonlinear pressure–velocity coupling
+- sparse-data reconstruction challenges
+- strong sensitivity to loss balancing
 
 making it ideal for evaluating PINN performance.
 
+---
 
----------------------------------------------------------------------
+# 📚 Reference
 
-REFERENCE
+Raissi, M.  
+Perdikaris, P.  
+Karniadakis, G.E.  
 
-Raissi, M.
-Perdikaris, P.
-Karniadakis, G.E.
-
-Physics-informed neural networks:
-A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations
+Physics-informed neural networks:  
+A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations  
 
 Journal of Computational Physics (2019)
 
----------------------------------------------------------------------
+---
 
-CITATION AND ATTRIBUTION
+# 📖 Citation and Attribution
 
-If you use this repository in your research, publications, or derivative work,
-please cite the repository and acknowledge the original authors:
+If you use this repository in research, publications, or derivative work, please cite:
 
-Santiago Correa
-Christian Díaz-Cuadro
+**Santiago Correa**  
+**Christian Díaz-Cuadro**
 
-Physics-Informed Neural Networks for Flow Past Cylinder (2D):
-Loss-balancing strategies for Navier–Stokes reconstruction.
+Suggested citation:
+
+Correa, S., Díaz-Cuadro, C.  
+Physics-Informed Neural Networks for Flow Past Cylinder (2D):  
+Loss-balancing strategies for Navier–Stokes reconstruction.  
 GitHub repository.
 
-If this code contributes to published results, please include a reference to
-the repository and clearly indicate any modifications performed.
-
----------------------------------------------------------------------
-
-ACADEMIC USE
-
-This repository is intended for research and educational purposes. If you use
-it as part of a scientific publication, thesis, or technical report, proper
-acknowledgment of the original authors is required.
+Example BibTeX:
 
 
----------------------------------------------------------------------
+@misc{correa_diazcuadro_pinn_cylinder,
+author = {Correa, Santiago and Díaz-Cuadro, Christian},
+title = {Physics-Informed Neural Networks for Flow Past Cylinder (2D)},
+year = {2026},
+publisher = {GitHub},
+howpublished = {\url{https://github.com/your-repository-link}}
 
-CONTACT
+}
 
-For questions, collaborations, or extensions of this work:
 
-Santiago Correa (scorrea@fing.edu.uy)
-Christian Díaz-Cuadro (cdiaz@fing.edu.uy)
+If this code contributes to published results, please include a reference to the repository and clearly indicate any modifications performed.
+
+---
+
+# 🎓 Academic Use
+
+This repository is intended for **research and educational purposes**.
+
+If used in:
+
+- journal papers
+- conference papers
+- theses
+- technical reports
+
+proper acknowledgment of the original authors is required.
+
+---
+
+# 📬 Contact
+
+**Santiago Correa**  
+scorrea@fing.edu.uy
+
+**Christian Díaz-Cuadro**  
+cdiaz@fing.edu.uy
