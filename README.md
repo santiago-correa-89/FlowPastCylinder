@@ -148,72 +148,52 @@ $$
 $$
 
 ---
-
 # 📊 Loss Function Structure
 
 Each implementation minimizes
 
 $$
-\mathcal{L} =
-\mathcal{L}_{data}
-+
-\mathcal{L}_{physics}
+\mathcal{L} = \mathcal{L}_{data} + \mathcal{L}_{physics}
 $$
+
 
 ### Data Loss
 
 $$
-\mathcal{L}_{data}
-=
-\text{MSE}(u_{pred}-u_{data})
+\mathcal{L}_{data} =
+\mathrm{MSE}(u_{\mathrm{pred}}-u_{\mathrm{data}})
 +
-\text{MSE}(v_{pred}-v_{data})
+\mathrm{MSE}(v_{\mathrm{pred}}-v_{\mathrm{data}})
 $$
+
 
 ### Physics Residual Loss
 
 $$
-\mathcal{L}_{physics}
-=
-\text{MSE}(f_u)
+\mathcal{L}_{physics} =
+\mathrm{MSE}(f_u)
 +
-\text{MSE}(f_v)
+\mathrm{MSE}(f_v)
 +
-\text{MSE}(\nabla \cdot \mathbf{u})
+\mathrm{MSE}(\nabla \cdot \mathbf{u})
 $$
+
 
 Residual definitions:
 
 $$
 f_u =
-u_t
-+
-u u_x
-+
-v u_y
-+
-p_x
--
-\nu (u_{xx}+u_{yy})
+u_t + u u_x + v u_y + p_x - \nu (u_{xx}+u_{yy})
 $$
 
 $$
 f_v =
-v_t
-+
-u v_x
-+
-v v_y
-+
-p_y
--
-\nu (v_{xx}+v_{yy})
+v_t + u v_x + v v_y + p_y - \nu (v_{xx}+v_{yy})
 $$
 
 $$
 \nabla \cdot \mathbf{u} = u_x + v_y
 $$
-
 ---
 
 # 🌊 Benchmark Case: Flow Past Cylinder
