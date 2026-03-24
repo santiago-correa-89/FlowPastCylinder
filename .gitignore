@@ -1,0 +1,10 @@
+# syntax: glob
+*.asv
+videos/
+*.DS_store
+venv/
+.env/
+*/env/
+PINNenv/
+
+
