@@ -194,6 +194,7 @@ $$
 $$
 \nabla \cdot \mathbf{u} = u_x + v_y
 $$
+
 ---
 
 # 🌊 Benchmark Case: Flow Past Cylinder
